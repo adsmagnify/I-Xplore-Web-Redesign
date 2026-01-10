@@ -182,6 +182,9 @@ export default function Home() {
       </div>
     </section>
 
+    {/* Programs Section - Seamlessly connected */}
+    <ProgramsSection />
+
     {/* Testimonials Section */}
     <TestimonialsSection />
 
@@ -250,163 +253,181 @@ function StatsSection() {
 
 // Philosophy Section Component
 function PhilosophySection() {
-  const philosophyItems = [
+  const philosophyWords = ['DARE', 'DISCOVER', 'TRANSFORM']
+  const philosophyText = "At iXplore, we believe that transformative experiences emerge when students step beyond their comfort zones, explore new perspectives, and return with newfound confidence. Our philosophy centers on three pillars that guide every journey we create."
+  
+  const imageRef = useFadeUp()
+  const textRef = useFadeUp()
+  const wordsRef = useFadeUp()
+
+  return (
+    <div className="mb-0 relative pt-16 lg:pt-24 pb-12 lg:pb-16">
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+        {/* Left Side - Experiential Image */}
+        <div
+          ref={imageRef.ref}
+          className={`transition-all duration-1000 ease-out ${
+            imageRef.isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+          }`}
+        >
+          <div className="relative aspect-[4/5] lg:aspect-square rounded-lg overflow-hidden">
+            <img
+              src="https://images.pexels.com/photos/14520158/pexels-photo-14520158.jpeg"
+              alt="Students in outdoor learning experience"
+              className="w-full h-full object-cover"
+            />
+            {/* Subtle overlay for depth */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+          </div>
+        </div>
+
+        {/* Right Side - Philosophy Content */}
+        <div
+          ref={textRef.ref}
+          className={`transition-all duration-1000 ease-out delay-200 ${
+            textRef.isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+          }`}
+        >
+          <div className="space-y-8 lg:space-y-12">
+            {/* Philosophy Words */}
+            <div
+              ref={wordsRef.ref}
+              className={`transition-all duration-1000 ease-out delay-300 ${
+                wordsRef.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}
+            >
+              <div className="space-y-4 lg:space-y-6">
+                {philosophyWords.map((word, index) => (
+                  <h3
+                    key={word}
+                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-none"
+                    style={{
+                      transitionDelay: `${400 + index * 100}ms`,
+                    }}
+                  >
+                    <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-700 via-green-600 to-emerald-700">
+                      {word}
+                    </span>
+                  </h3>
+                ))}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="w-16 h-px bg-green-700/40"></div>
+
+            {/* Supporting Text */}
+            <p className="text-lg sm:text-xl lg:text-2xl text-gray-700 leading-relaxed font-light max-w-2xl">
+              {philosophyText}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Programs Section Component
+function ProgramsSection() {
+  const programs = [
     {
-      word: 'DARE',
-      description: 'Step beyond comfort zones and embrace challenges that build character and resilience.',
-      gradient: 'from-green-600 via-green-500 to-emerald-600',
-      gradientInactive: 'from-gray-400 via-gray-300 to-gray-400',
+      title: 'LSTC',
+      subtitle: '',
+      description: 'Intensive programs designed to build leadership capabilities, teamwork, and practical life skills through structured outdoor experiences.',
+      image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2070&auto=format&fit=crop',
+      cta: 'Explore LSTC',
     },
     {
-      word: 'DISCOVER',
-      description: 'Explore new landscapes, cultures, and perspectives that expand understanding and worldview.',
-      gradient: 'from-emerald-600 via-green-500 to-teal-600',
-      gradientInactive: 'from-gray-400 via-gray-300 to-gray-400',
+      title: 'Project-Based Trips',
+      subtitle: '',
+      description: 'Immersive experiences where students engage in meaningful projects, contributing to communities while developing critical thinking and problem-solving skills.',
+      image: 'https://images.pexels.com/photos/917511/pexels-photo-917511.jpeg',
+      cta: 'View Projects',
     },
     {
-      word: 'BECOME',
-      description: 'Return with newfound confidence, skills, and memories that shape lifelong growth.',
-      gradient: 'from-teal-600 via-green-500 to-green-600',
-      gradientInactive: 'from-gray-400 via-gray-300 to-gray-400',
+      title: 'Himalayan Treks',
+      subtitle: '',
+      description: 'Journeys through the majestic Himalayas that combine physical challenge with cultural immersion, fostering resilience and deep connection with nature.',
+      image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop',
+      cta: 'Discover Treks',
     },
   ]
 
-  const [activeIndex, setActiveIndex] = useState(0)
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
-
-  useEffect(() => {
-    const container = scrollContainerRef.current
-    if (!container) return
-
-    const handleScroll = () => {
-      const scrollLeft = container.scrollLeft
-      const panelWidth = container.clientWidth
-      const newIndex = Math.round(scrollLeft / panelWidth)
-      setActiveIndex(newIndex)
-    }
-
-    container.addEventListener('scroll', handleScroll)
-    
-    // Auto-scroll functionality
-    const startAutoScroll = () => {
-      autoScrollIntervalRef.current = setInterval(() => {
-        if (container) {
-          const currentIndex = Math.round(container.scrollLeft / container.clientWidth)
-          const nextIndex = (currentIndex + 1) % philosophyItems.length
-          container.scrollTo({
-            left: nextIndex * container.clientWidth,
-            behavior: 'smooth',
-          })
-        }
-      }, 5000) // Change slide every 5 seconds
-    }
-
-    // Pause autoscroll on hover
-    const pauseAutoScroll = () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current)
-        autoScrollIntervalRef.current = null
-      }
-    }
-
-    // Resume autoscroll on mouse leave
-    const resumeAutoScroll = () => {
-      if (!autoScrollIntervalRef.current) {
-        startAutoScroll()
-      }
-    }
-
-    container.addEventListener('mouseenter', pauseAutoScroll)
-    container.addEventListener('mouseleave', resumeAutoScroll)
-    
-    startAutoScroll()
-    
-    return () => {
-      container.removeEventListener('scroll', handleScroll)
-      container.removeEventListener('mouseenter', pauseAutoScroll)
-      container.removeEventListener('mouseleave', resumeAutoScroll)
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current)
-      }
-    }
-  }, [philosophyItems.length])
+  const { ref, isVisible } = useFadeUp()
 
   return (
-    <div className="mb-20 lg:mb-32 relative py-16 lg:py-24">
-      <div 
-        ref={scrollContainerRef}
-        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth"
-        style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-        }}
-      >
-        {philosophyItems.map((item, index) => (
-          <div
-            key={item.word}
-            className="flex-shrink-0 w-full snap-center px-4 sm:px-6 lg:px-8"
-          >
-            <div className={`max-w-4xl mx-auto text-center transition-all duration-700 ease-out ${
-              activeIndex === index 
-                ? 'opacity-100 scale-100 translate-y-0' 
-                : 'opacity-30 scale-95 translate-y-4'
-            }`}>
-              <h3 className={`text-7xl sm:text-8xl md:text-9xl lg:text-[12rem] font-bold tracking-tighter leading-none mb-8 transition-all duration-700 ease-out ${
-                activeIndex === index 
-                  ? 'scale-100' 
-                  : 'scale-90'
-              }`}>
-                <span className={`bg-clip-text text-transparent bg-gradient-to-br transition-all duration-700 ease-out ${
-                  activeIndex === index 
-                    ? `${item.gradient} drop-shadow-lg gradient-animate` 
-                    : item.gradientInactive
-                }`}>
-                  {item.word}
-                </span>
-              </h3>
-              
-              {/* Animated green accent line - only visible on active */}
-              <div className={`h-px bg-gradient-to-r from-transparent via-green-600 to-transparent mx-auto mb-8 transition-all duration-700 ease-out ${
-                activeIndex === index 
-                  ? 'w-32 opacity-100 scale-x-100' 
-                  : 'w-0 opacity-0 scale-x-0'
-              }`}></div>
-              
-              <p className={`text-lg sm:text-xl lg:text-2xl leading-relaxed font-light tracking-wide max-w-2xl mx-auto transition-all duration-700 ease-out ${
-                activeIndex === index 
-                  ? 'text-gray-700 opacity-100 translate-y-0' 
-                  : 'text-gray-400 opacity-50 translate-y-2'
-              }`}>
-                {item.description}
-              </p>
-            </div>
+    <section className="bg-white pt-8 lg:pt-12 pb-20 lg:pb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          ref={ref}
+          className={`transition-all duration-1000 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+            {programs.map((program, index) => (
+              <div
+                key={program.title}
+                className="group relative overflow-hidden rounded-lg bg-gray-900 aspect-[4/5] transition-all duration-700 ease-out hover:scale-[1.02]"
+                style={{
+                  transitionDelay: `${index * 100}ms`,
+                }}
+              >
+                {/* Image */}
+                <div className="absolute inset-0">
+                  <img
+                    src={program.image}
+                    alt={program.title}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  />
+                  {/* Soft gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
+                  <div className="absolute inset-0 bg-green-900/5 group-hover:bg-green-900/10 transition-colors duration-700"></div>
+                </div>
+
+                {/* Content */}
+                <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 lg:p-10">
+                  <div className="space-y-4">
+                    {/* Subtitle */}
+                    <p className="text-green-600 text-sm font-medium tracking-wide uppercase">
+                      {program.subtitle}
+                    </p>
+                    
+                    {/* Title */}
+                    <h3 className="text-3xl sm:text-4xl font-bold text-white leading-tight">
+                      {program.title}
+                    </h3>
+                    
+                    {/* Description */}
+                    <p className="text-gray-300 text-base sm:text-lg leading-relaxed font-light max-w-md">
+                      {program.description}
+                    </p>
+                    
+                    {/* CTA */}
+                    <div className="pt-4">
+                      <a
+                        href="#"
+                        className="inline-flex items-center text-white text-sm font-medium tracking-wide group/cta transition-all duration-300 hover:text-green-400"
+                      >
+                        <span>{program.cta}</span>
+                        <svg
+                          className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/cta:translate-x-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-      
-      {/* Scroll indicator dots */}
-      <div className="flex justify-center gap-2 mt-12">
-        {philosophyItems.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              const container = scrollContainerRef.current
-              if (container) {
-                container.scrollTo({
-                  left: index * container.clientWidth,
-                  behavior: 'smooth',
-                })
-              }
-            }}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              activeIndex === index ? 'bg-green-700 w-8' : 'bg-gray-300'
-            }`}
-            aria-label={`Go to ${philosophyItems[index].word}`}
-          />
-        ))}
-      </div>
-    </div>
+    </section>
   )
 }
 
